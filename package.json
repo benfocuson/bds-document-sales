@@ -1,0 +1,27 @@
+{
+  "name": "source_root",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon server.js",
+    "build": "netlify deploy --prod"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "i18n": "^0.15.1",
+    "mysql2": "^3.2.0",
+    "netlify-cli": "^13.2.1",
+    "netlify-lambda": "^2.0.16",
+    "nodemon": "^2.0.22",
+    "path": "^0.12.7",
+    "sequelize": "^6.30.0",
+    "sequelize-cli": "^6.6.0",
+    "serverless-http": "^3.2.0"
+  }
+}
