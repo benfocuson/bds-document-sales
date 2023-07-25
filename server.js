@@ -5,6 +5,7 @@ let express = require('express');
 const {I18n} = require('i18n');
 const path = require('path')
 let cors = require('cors');
+const uploadFirebase = require('./src/middlewares/uploadFirebase.js');
 
 const app = express();
 
@@ -23,6 +24,7 @@ const i18n = new I18n({
 })
 
 app.use(i18n.init);
+// app.use('/upload', uploadFirebase);
 
 //connect to routes
 require("./src/api/routes.js")(app);

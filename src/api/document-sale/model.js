@@ -8,6 +8,10 @@ module.exports = (sequelize, DataTypes) => {
           primaryKey: true,
           field: 'id'
       },
+      category_id: {
+          type: DataTypes.STRING,
+          field: 'category_id'
+      },
       category_detail_id: {
           type: DataTypes.STRING,
           field: 'category_detail_id'
@@ -16,17 +20,21 @@ module.exports = (sequelize, DataTypes) => {
           type: DataTypes.STRING,
           field: 'title'
       },
-      image: {
+      image_name: {
           type: DataTypes.STRING,
-          field: 'image'
+          field: 'image_name'
+      },
+      image_url: {
+          type: DataTypes.STRING,
+          field: 'image_url'
       },
       link: {
           type: DataTypes.STRING,
           field: 'link'
       },
-      sort_number: {
+      sort_number_document_sale: {
           type: DataTypes.INTEGER,
-          field: 'sort_number'
+          field: 'sort_number_document_sale'
       },
       created_at: {
           type: DataTypes.DATE,

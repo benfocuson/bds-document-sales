@@ -16,9 +16,9 @@ module.exports = (sequelize, DataTypes) => {
           type: DataTypes.STRING,
           field: 'name'
       },
-      sort_number: {
+      sort_number_category_detail: {
           type: DataTypes.INTEGER,
-          field: 'sort_number'
+          field: 'sort_number_category_detail'
       },
       created_at: {
           type: DataTypes.DATE,

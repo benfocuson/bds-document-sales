@@ -1,5 +1,6 @@
 const config = require('../../config/config.js')
 const db = require('../../config/dbConfig.js')
+const categoryService = require("./services.js")
 require('dotenv').config();
 
 /**
@@ -22,14 +23,24 @@ const createCategory = async (req, res) => {
  * Created: DVBen(27/03/2023)
 */
 const getListCategory = async (req, res) => {
+  try {
+    let result = await categoryService.getAllCategory()
 
-  const result = await db.db.Category.findAll()
+    if (result) {
+      res.json({
+        categories: result,
+        status: config.httpStatus.success,
+        message: req.__('category.find.success')
+      });
+    } else {
+      config.response(res, result, config.httpStatus.badRequest, req.__('category.find.failed'));
+    }
 
-  if (result) {
-    config.response(res, result, config.httpStatus.success, req.__('category.find.success'));
-  } else {
-    config.response(res, result, config.httpStatus.badRequest, req.__('category.find.failed'));
+  } catch (error) {
+    config.response(res, error, config.httpStatus.badRequest, req.__('system.error'));
   }
+
+
 }
 
 /**
@@ -69,16 +80,58 @@ const deleteCategory = async (req, res) => {
  * Updated: DVBen(27/03/2023)
 */
 const updateCategory = async (req, res) => {
-  let id = req.params["id"]
-  let body = req.body
+  try {
+    let id = req.params["id"]
+    let body = req.body
+    body.id = id
 
-  const result = await db.db.Category.update(body, { where: { id } })
+    if (body.sort_number_category) {
+      //update position
+      await handleUpdatePosition(body)
+    }
 
-  if (result) {
-    config.response(res, result, config.httpStatus.success, req.__('category.update.success'));
-  } else {
-    config.response(res, result, config.httpStatus.badRequest, req.__('category.update.failed'));
+    //update category
+    const result = await db.db.Category.update(body, { where: { id } })
+
+    //return result
+    if (result && result.length) {
+      config.response(res, result, config.httpStatus.success, req.__('category.update.success'));
+    } else {
+      config.response(res, result, config.httpStatus.badRequest, req.__('category.update.failed'));
+    }
+
+  } catch (error) {
+    config.response(res, error, config.httpStatus.badRequest, req.__('system.error'));
   }
+}
+
+const handleUpdatePosition = async (body) => {
+  let isSuccess = true
+  //get list categories
+  let listCategories = await db.db.Category.findAll({ raw: true })
+  let currentCategory = await db.db.Category.findOne({where: {id: body.id}, raw: true })
+
+  if (listCategories && listCategories) {
+    for (let itemCategory of listCategories) {
+      //check sort_number_category and increase sort_number_category of other item
+      //nếu số hiện tại > số truyền vào
+      if (currentCategory.sort_number_category > body.sort_number_category) {
+        //thì tăng giá trị của bản ghi có sort number >= số truyền vào và < số hiện tại
+        if (body.sort_number_category <= itemCategory.sort_number_category && itemCategory.sort_number_category < currentCategory.sort_number_category) {
+          await db.db.Category.update({ sort_number_category: itemCategory.sort_number_category + 1 }, { where: { id: itemCategory.id } })
+        }
+      } else {
+        //nếu số hiện tại < số truyền vào
+        //thì giảm giá trị của bản ghi có sort number <= số truyền vào và > số hiện tại
+        if (currentCategory.sort_number_category < itemCategory.sort_number_category && itemCategory.sort_number_category <= body.sort_number_category) {
+          await db.db.Category.update({ sort_number_category: itemCategory.sort_number_category - 1 }, { where: { id: itemCategory.id } })
+        }
+      }
+    }
+  }
+
+  //return
+  return isSuccess
 }
 
 

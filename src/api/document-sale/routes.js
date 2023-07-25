@@ -1,12 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const documentSalesController = require('./controller.js')
+const { uploadFirebase } = require('../../middlewares/uploadFirebase.js')
 
 /**
  * Description: method create 
  * Created: DVBen(27/03/2023)
 */
-router.post('/document-sales', (req,res,next) => {
+router.post('/document-sales', uploadFirebase.single("filename"), (req,res,next) => {
     return documentSalesController.createDocumentSale(req,res)
 })
 
@@ -40,6 +41,14 @@ router.put('/document-sales/:id', (req,res,next) => {
 */
 router.delete('/document-sales/:id', (req,res,next) => {
     return documentSalesController.deleteDocumentSale(req,res)
+})
+
+/**
+ * Description: method upload image
+ * Created: DVBen(27/03/2023)
+*/
+router.delete('/document-sales/upload-img', uploadFirebase.single("filename"), (req,res,next) => {
+    return "oo"
 })
 
 module.exports = router
