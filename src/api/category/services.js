@@ -3,20 +3,20 @@ const db = require('../../config/dbConfig.js')
 const getAllCategory = async (searchObj, isCount) => {
 
     //search list categories
-    const listCategories = await db.db.Category.findAll({raw: true})
+    const listCategories = await db.db.Category.findAll({raw: true, order: [['sort_number_category', 'ASC']]})
 
     if (listCategories && listCategories.length) {
         for (let itemCategory of listCategories) {
 
             //search list category details
-            let listCategoryDetails = await db.db.CategoryDetails.findAll({ where: { category_id: itemCategory.id }, raw: true })
+            let listCategoryDetails = await db.db.CategoryDetails.findAll({ where: { category_id: itemCategory.id }, raw: true,order: [['sort_number_category_detail', 'ASC']] })
 
             if (listCategoryDetails && listCategoryDetails) {
 
                 for (let itemCategoryDetail of listCategoryDetails) {
 
                     //search list docs
-                    let listDocumentSales = await db.db.DocumentSales.findAll({ where: { category_detail_id: itemCategoryDetail.id }, raw: true })
+                    let listDocumentSales = await db.db.DocumentSales.findAll({ where: { category_detail_id: itemCategoryDetail.id }, raw: true, order: [['sort_number_document_sale', 'ASC']] })
 
                     if(listDocumentSales && listDocumentSales.length){
                         //set data document
